@@ -177,24 +177,6 @@ npm run build
 npm start
 ```
 
-### 环境变量
-
-后端环境变量配置在 `.env.example` 文件中：
-
-```bash
-# 服务器配置
-PORT=5175
-NODE_ENV=development
-
-# AI模型配置（模型名称，不需要密钥）
-MODELSCOPE_MODEL=deepseek-ai/DeepSeek-V3.2
-EMBEDDING_MODEL=Qwen/Qwen3-Embedding-8B
-
-# 数据配置
-MOCK_DATA_ENABLED=true
-AUTO_UPDATE_INTERVAL=30000
-```
-
 ## 许可证
 
 MIT License

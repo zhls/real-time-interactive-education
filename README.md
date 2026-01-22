@@ -1,16 +1,17 @@
-# 学科辅导：直观讲解定理，引导独立思考
+# 学习辅导助手：智能学习顾问系统
 
 **赛道**: AI 实时交互教育
 
 ## 项目简介
 
-本项目是一个基于魔珐星云3D数字人和魔搭社区AI大模型的智能学科辅导系统。通过：
+本项目是一个基于魔珐星云3D数字人和魔搭社区AI大模型的智能学习辅导系统。通过：
 
 - 🤖 **3D数字人交互** - 实时语音对话，生动的教学体验
-- 📚 **多学科支持** - 数学、物理、化学、逻辑等多个学科
-- 🎯 **苏格拉底式教学** - 通过提问引导思考，而非直接给出答案
-- 📊 **可视化定理展示** - 直观的公式、证明过程和例题展示
-- 🧠 **RAG知识库增强** - 基于向量检索的精准知识匹配
+- 📚 **智能学习对话** - AI助手根据用户问题提供专业学习建议
+- 🔊 **语音播报** - 数字人自动播报学习建议，支持语音交互
+- 🎭 **3D数字人** - 魔珐星云3D数字人提供拟人化学习辅导服务
+- 🎤 **语音输入** - 支持语音提问，解放双手
+- 💡 **学习建议** - 智能提供个性化学习方法和技巧
 
 ## 技术栈
 
@@ -19,13 +20,12 @@
 - Vite 5.x
 - TailwindCSS
 - Zustand (状态管理)
-- React Markdown + KaTeX (公式渲染)
+- Web Speech API (语音识别)
 
 ### 后端
 - Node.js + Express + TypeScript
 - 魔搭社区 ModelScope API
-- 向量嵌入 (Qwen/Qwen3-Embedding-8B)
-- DeepSeek-V3
+- DeepSeek-V3.2
 
 ### 数字人
 - 魔珐星云具身驱动 SDK v0.1.0-alpha.45
@@ -36,33 +36,42 @@
 real-time-interactive-education/
 ├── src/
 │   ├── client/                    # React 前端
-│   │   ├── components/
+│   │   ├── components/            # 组件
+│   │   │   ├── Admin/             # 管理组件
 │   │   │   ├── Avatar/            # 数字人组件
 │   │   │   ├── Chat/              # 对话组件
-│   │   │   ├── Subject/           # 学科特色组件
+│   │   │   ├── Subject/           # 学科组件
 │   │   │   └── UI/                # 通用 UI 组件
+│   │   ├── services/              # 服务层
+│   │   │   ├── keyService.ts      # 密钥管理
+│   │   │   └── dataService.ts     # 数据服务
 │   │   ├── store/                 # Zustand 状态管理
-│   │   ├── services/              # API 服务
+│   │   │   ├── avatarStore.ts     # 数字人状态
+│   │   │   ├── dataStore.ts       # 数据状态
+│   │   │   ├── keyStore.ts        # 密钥状态
+│   │   │   └── taskStore.ts       # 任务状态
 │   │   ├── App.tsx                # 应用入口
 │   │   └── main.tsx               # React 挂载
 │   ├── server/                    # Express 后端
 │   │   ├── routes/                # API 路由
+│   │   │   ├── data.routes.ts     # 数据接口
+│   │   │   └── chat.routes.ts     # 对话接口
 │   │   ├── services/              # 业务服务
-│   │   │   ├── ChatService.ts     # 对话处理
-│   │   │   ├── RAGService.ts      # 知识库检索
-│   │   │   ├── ThinkingService.ts # 思考引导
-│   │   │   └── KnowledgeService.ts # 知识库管理
+│   │   │   ├── aiDataGenerator.ts # AI数据生成
+│   │   │   ├── chatService.ts     # 对话服务
+│   │   │   └── enhancedDataGenerator.ts # 增强数据生成
 │   │   └── app.ts                 # Express 应用
 │   └── shared/                    # 前后端共享
-│       ├── types/                 # 类型定义
-│       └── constants/             # 常量
-├── data/
-│   └── knowledge/                 # 知识库数据
-├── index.html                    # HTML入口
-├── package.json
-├── vite.config.ts
-├── tsconfig.json
-└── .env.example
+│       ├── constants/             # 常量
+│       └── types/                 # 类型定义
+├── data/                          # 数据文件
+│   └── mock/                      # 模拟学习数据
+├── index.html                     # HTML入口
+├── package.json                   # 依赖配置
+├── vite.config.ts                 # Vite 配置
+├── tsconfig.json                  # TypeScript 配置
+├── tsconfig.server.json           # Node TypeScript 配置
+└── .env.server                    # 后端环境变量
 ```
 
 ## 快速开始
@@ -78,109 +87,86 @@ real-time-interactive-education/
 npm install
 ```
 
-### 3. 配置环境变量
-
-在应用内点击「设置」按钮，或创建 `.env` 文件：
-
-```bash
-# 魔搭社区 API 密钥
-MODELSCOPE_API_KEY=your_api_key_here
-
-# 魔珐星云应用密钥
-XMOV_APP_ID=your_app_id_here
-XMOV_APP_SECRET=your_app_secret_here
-```
-
-### 4. 启动开发服务器
+### 3. 启动开发服务器
 
 ```bash
 npm run dev
 ```
 
-访问 http://localhost:5173 查看应用。
+访问 http://localhost:5175 查看应用。
+
+### 4. 配置密钥
+
+首次访问时需要配置以下密钥（存储在浏览器 localStorage）：
+
+| 密钥 | 获取方式 | 用途 |
+|------|----------|------|
+| 魔搭社区 API 密钥 | [魔搭社区](https://modelscope.cn) 创建新令牌 | AI数据生成和对话 |
+| 魔珐星云 App ID | [星云控制台](https://xingyun3d.com) 创建应用 | 数字人连接 |
+| 魔珐星云 App Secret | 星云控制台获取 | 数字人认证 |
 
 ## 核心功能
 
-### 1. AI数字人对话
+### 1. 智能学习对话
 
-AI 数字人 "学小思" 可以通过自然对话讲解各学科定理：
-- 使用苏格拉底式提问引导思考
+AI 数字人 "小学习" 可以通过自然对话提供专业学习建议：
 - 支持流式响应，实时反馈
-- 结合知识库提供准确内容
-- 一次性说完所有内容，无停顿
+- 基于学习知识库，确保专业性和准确性
+- 提供个性化的学习方法和技巧
+- 保持专业、友好、鼓励的态度
 
-### 2. 快捷提问
+### 2. 语音交互
 
-- 浮动弹出框展示常用问题
-- 按学科分类组织（数学、物理、练习、复习等）
-- 一键发送，快速开始对话
+- 支持语音提问，解放双手
+- 数字人自动播报学习建议
+- 自然流畅的对话体验
 
-### 3. 图片题目解析
+### 3. 学习分析与建议
 
-- 支持上传题目图片
-- AI 自动识别题目类型
-- 提供详细解题步骤和答案
+- 基于用户描述的学习情况，分析学习需求和问题
+- 提供定制化的学习计划和方法建议
+- 基于学习科学原理，给出专业的学习策略
+- 帮助用户制定合理的学习计划和目标
 
-### 4. 对话体验优化
+### 4. 情感化反馈
 
-- 智能自动滚动
-- 滚动到底部按钮
-- 美观的对话气泡
-- 支持多轮对话
-
-## AI 提示词
-
-```
-你是一位充满耐心、善于引导的学科辅导老师，名为"学小思"。
-
-你的教学理念：
-1. 苏格拉底式教学 - 通过提问引导学生独立思考，而不是直接给出答案
-2. 直观讲解 - 用生动形象的比喻和例子帮助理解抽象概念
-3. 循序渐进 - 根据学生的理解程度调整讲解深度和节奏
-4. 鼓励探索 - 培养学生的好奇心和探索精神
-
-你的回答风格：
-- 使用温暖、鼓励的语气
-- 多用提问而非陈述
-- 适时给予肯定和鼓励
-- 用生活化的例子解释抽象概念
-
-重要原则：
-- 一般情况下不要直接给出答案，而是引导学生自己发现
-- 当用户上传题目图片请求解析时，请直接给出详细的解题步骤和答案
-```
+- 根据语义分析，数字人做出点头、挥手等相应动作
+- 针对积极内容，数字人会做出鼓励性动作
+- 针对困难内容，数字人会做出安慰和支持性动作
+- 数字人的动作与语音内容同步，形成协调的情感表达
 
 ## API 接口
 
 ### 对话接口
 
 #### POST /api/chat/stream
-流式对话（SSE）
+流式学习对话接口（SSE）
 
 **请求体**
 ```json
 {
-  "message": "请讲解牛顿第一定律"
+  "message": "如何提高学习效率？",
+  "conversationHistory": [],
+  "currentData": { ... }
 }
 ```
 
 **响应** (SSE流)
 ```
-data: {"type":"content","data":"你"}
-data: {"type":"content","data":"好"}
+data: {"type":"content","data":"提高学习效率的关键"}
+data: {"type":"content","data":"是合理规划时间"}
 data: {"type":"end"}
 ```
 
-### 知识库接口
+### 数据接口
 
-#### GET /api/knowledge
-查询知识库
+#### GET /api/data
+获取学习数据
 
-**查询参数**
-- `category`: 学科分类 (math/physics/chemistry/logic)
-- `topic`: 主题
-- `difficulty`: 难度 (基础/进阶/精通)
-- `search`: 搜索关键词
+### 健康检查
+
+#### GET /health
+健康检查接口
 
 ## 部署说明
 
@@ -188,53 +174,27 @@ data: {"type":"end"}
 
 ```bash
 npm run build
+npm start
 ```
 
 ### 环境变量
 
-生产环境需要配置以下环境变量：
-- `MODELSCOPE_API_KEY`: 魔搭社区 API 密钥
-- `XMOV_APP_ID`: 魔珐星云应用 ID
-- `XMOV_APP_SECRET`: 魔珐星云应用密钥
+后端环境变量配置在 `.env.example` 文件中：
 
-## 界面功能
+```bash
+# 服务器配置
+PORT=5175
+NODE_ENV=development
 
-### 顶部导航
-- **设置** ⚙️：配置 API 密钥
-- **清空对话**：清除对话历史
+# AI模型配置（模型名称，不需要密钥）
+MODELSCOPE_MODEL=deepseek-ai/DeepSeek-V3.2
+EMBEDDING_MODEL=Qwen/Qwen3-Embedding-8B
 
-### 对话记录区域
-- **快捷提问** ⚡：浮动弹出框，选择常用问题
-- **滚动到底部**：向上滚动时显示的浮动按钮
-- **消息数量**：显示当前消息条数
-
-### 数字人控制
-- **连接/断开**：控制数字人连接状态
-- **状态指示**：实时显示数字人状态
-
-## 常见问题
-
-### Q: 数字人无法加载？
-A: 检查魔珐星云 SDK 配置是否正确，确保 App ID 和 Secret 有效。
-
-### Q: AI 响应很慢？
-A: 检查魔搭 API 密钥是否配置，网络连接是否正常。
-
-### Q: 数字人没有声音？
-A:
-1. 确认数字人已连接（状态显示为绿色）
-2. 检查浏览器是否允许音频播放
-3. 查看控制台是否有错误信息
-
-### Q: 知识库检索不准确？
-A: 可以增加知识库数据，或调整 RAG 检索参数。
+# 数据配置
+MOCK_DATA_ENABLED=true
+AUTO_UPDATE_INTERVAL=30000
+```
 
 ## 许可证
 
-MIT
-
-## 致谢
-
-- 魔珐星云 - 3D数字人技术
-- 魔搭社区 - AI 大模型服务
-- DeepSeek - AI 模型
+MIT License

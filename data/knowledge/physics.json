@@ -364,5 +364,63 @@
     ],
     "source": "uploaded_document",
     "source_file": "wuliAll.txt"
+  },
+  {
+    "id": "doc_1768670196268_dz5y8ydsq",
+    "category": "physics",
+    "subject": "物理",
+    "topic": "通用",
+    "theorem": "物理公式大全",
+    "difficulty": "基础",
+    "description": "物理公式大全 一、力学 1. 牛顿第二定律：F = ma 2. 万有引力定律：F = G·(m₁m₂)/r² 3. 动量：p = mv 4. 动能：Eₖ = (1/2)mv² 5. 势能： - 重力势能：Eₚ = mgh - 弹性势能：Eₚ = (1/2)kx² 6. 功：W = F·s·cosθ 7. 功率：P = W/t = F·v 8. 角动量：L = r × p = Iω 9. 转动惯量：...",
+    "formula": "- 重力势能：Eₚ =",
+    "formula_latex": "",
+    "proof_steps": [],
+    "examples": [],
+    "common_mistakes": [],
+    "socratic_questions": [],
+    "keywords": [
+      "mv",
+      "10",
+      "dq",
+      "dt",
+      "sin",
+      "物理公式大全",
+      "力学",
+      "牛顿第二定律",
+      "ma",
+      "万有引力定律"
+    ],
+    "source": "uploaded_document",
+    "source_file": "wuliAll.txt"
+  },
+  {
+    "id": "doc_1768672364499_89m3olrvp",
+    "category": "physics",
+    "subject": "物理",
+    "topic": "通用",
+    "theorem": "物理公式大全",
+    "difficulty": "基础",
+    "description": "物理公式大全 一、力学 1. 牛顿第二定律：F = ma 2. 万有引力定律：F = G·(m₁m₂)/r² 3. 动量：p = mv 4. 动能：Eₖ = (1/2)mv² 5. 势能： - 重力势能：Eₚ = mgh - 弹性势能：Eₚ = (1/2)kx² 6. 功：W = F·s·cosθ 7. 功率：P = W/t = F·v 8. 角动量：L = r × p = Iω 9. 转动惯量：...",
+    "formula": "- 重力势能：Eₚ =",
+    "formula_latex": "",
+    "proof_steps": [],
+    "examples": [],
+    "common_mistakes": [],
+    "socratic_questions": [],
+    "keywords": [
+      "mv",
+      "10",
+      "dq",
+      "dt",
+      "sin",
+      "物理公式大全",
+      "力学",
+      "牛顿第二定律",
+      "ma",
+      "万有引力定律"
+    ],
+    "source": "uploaded_document",
+    "source_file": "wuliAll.txt"
   }
 ]

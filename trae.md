@@ -1,10 +1,10 @@
-# 学习辅导助手：智能学习顾问系统
+# 学科辅导：直观讲解定理，引导独立思考
 
 ## 项目概述
 
 **赛道**: AI 实时交互教育
-**项目名称**: 学习辅导助手：智能学习顾问系统
-**项目描述**: 通过AI数字人进行学习辅导，提供专业的学习建议和方法指导，结合语音交互和情感化反馈，增强学习过程的互动性和趣味性。
+**项目名称**: 学科辅导：直观讲解定理，引导独立思考
+**项目描述**: 通过AI数字人进行学科定理讲解，结合可视化展示和苏格拉底式提问，引导学生独立思考和理解核心概念。
 
 ## 技术栈
 
@@ -17,7 +17,8 @@
 | 后端框架 | Node.js + Express + TypeScript |
 | 数字人SDK | 魔珐星云具身驱动SDK (0.1.0-alpha.45) |
 | AI服务 | 魔搭社区 ModelScope |
-| AI模型 | deepseek-ai/DeepSeek-V3.2 |
+| AI模型 | deepseek-ai/DeepSeek-V3 |
+| 嵌入模型 | Qwen/Qwen3-Embedding-8B |
 
 ## 项目结构
 
@@ -25,42 +26,44 @@
 real-time-interactive-education/
 ├── src/
 │   ├── client/                    # React 前端
-│   │   ├── components/            # 组件
-│   │   │   ├── Admin/             # 管理组件
+│   │   ├── components/
 │   │   │   ├── Avatar/            # 数字人组件
 │   │   │   │   ├── AvatarContainer.tsx # 数字人容器
 │   │   │   │   ├── AvatarController.ts # 数字人控制器
 │   │   │   │   └── index.ts
 │   │   │   ├── Chat/              # 对话组件
 │   │   │   │   ├── ChatBox.tsx        # 对话框
+│   │   │   │   ├── QuickActionsPopover.tsx # 快捷提问弹出框
+│   │   │   │   ├── InputArea.tsx      # 输入区
 │   │   │   │   └── index.ts
-│   │   │   ├── Subject/           # 学科组件
+│   │   │   ├── Subject/           # 学科特色组件
+│   │   │   │   ├── TheoremCard.tsx    # 定理卡片
+│   │   │   │   ├── TheoremDetail.tsx  # 定理详情
 │   │   │   │   └── index.ts
 │   │   │   └── UI/                # 通用UI组件
 │   │   │       ├── ApiKeyModal.tsx   # API密钥配置
 │   │   │       └── index.ts
-│   │   ├── services/              # 服务层
-│   │   │   ├── keyService.ts        # 密钥管理
-│   │   │   ├── dataService.ts       # 数据服务
-│   │   │   └── index.ts
 │   │   ├── store/                 # Zustand 状态管理
-│   │   │   ├── avatarStore.ts       # 数字人状态
-│   │   │   ├── dataStore.ts         # 数据状态
-│   │   │   ├── keyStore.ts          # 密钥状态
-│   │   │   ├── taskStore.ts         # 任务状态
+│   │   │   ├── useChatStore.ts        # 对话状态
+│   │   │   ├── useSubjectStore.ts     # 学科状态
+│   │   │   ├── useProgressStore.ts    # 学习进度
+│   │   │   └── useAvatarStore.ts      # 数字人状态
+│   │   ├── services/              # API 服务
+│   │   │   ├── chatService.ts        # 对话服务
+│   │   │   ├── knowledgeService.ts    # 知识库服务
 │   │   │   └── index.ts
 │   │   ├── App.tsx                # 应用入口
 │   │   └── main.tsx               # React 挂载
 │   ├── server/                    # Express 后端
-│   │   ├── routes/                # API路由
-│   │   │   ├── data.routes.ts        # 数据接口
-│   │   │   ├── chat.routes.ts        # 对话接口
-│   │   │   └── index.ts
+│   │   ├── routes/                # API 路由
+│   │   │   ├── chat.ts               # 对话路由
+│   │   │   └── knowledge.ts          # 知识库路由
 │   │   ├── services/              # 业务服务
-│   │   │   ├── aiDataGenerator.ts     # AI数据生成
-│   │   │   ├── chatService.ts         # 对话服务
-│   │   │   ├── enhancedDataGenerator.ts # 增强数据生成
-│   │   │   └── index.ts
+│   │   │   ├── ChatService.ts        # 对话服务
+│   │   │   ├── RAGService.ts         # RAG 检索服务
+│   │   │   ├── ThinkingService.ts    # 思考引导服务
+│   │   │   ├── ModelScopeService.ts  # AI模型服务
+│   │   │   └── KnowledgeService.ts   # 知识库管理
 │   │   └── app.ts                 # Express 应用
 │   └── shared/                    # 前后端共享
 │       ├── types/                 # 共享类型
@@ -68,80 +71,125 @@ real-time-interactive-education/
 │       └── constants/             # 常量
 │           └── index.ts
 ├── data/                         # 数据文件
-│   └── mock/                     # 模拟学习数据
+│   └── knowledge/                # 知识库数据
+│       ├── math.json             # 数学定理库
+│       ├── physics.json          # 物理原理库
+│       ├── chemistry.json        # 化学原理库
+│       └── logic.json            # 逻辑推理库
+├── public/                       # 静态资源
+│   └── uploads/                  # 用户上传图片
 ├── index.html                    # HTML入口
 ├── package.json                  # 依赖配置
 ├── vite.config.ts               # Vite 配置
 ├── tsconfig.json                # TypeScript 配置
-├── tsconfig.server.json         # Node TypeScript 配置
-└── .env.server                  # 环境变量模板
+├── tsconfig.node.json           # Node TypeScript 配置
+├── .env.example                 # 环境变量模板
+└── README.md                    # 项目说明
 ```
 
 ## 核心功能
 
-### 1. 智能学习对话
-- 支持文本和语音输入
-- 流式响应，实时反馈
-- 基于学习知识库，确保专业性和准确性
-- 具身智能体验：数字人在对话过程中保持自然的表情和轻微动作
+### 1. 学科定理讲解
+- 支持多学科：数学、物理、化学、逻辑等
+- 定理/原理的直观讲解
+- 苏格拉底式提问引导思考
+- 结合知识库提供准确内容
 
-### 2. 语音交互
-- 支持语音提问，解放双手
-- 数字人自动播报学习建议
-- 自然流畅的对话体验
+### 2. AI数字人交互
+- 3D数字人实时对话
+- 流式响应，即时反馈
+- 语音播报（一次性说完，无停顿）
+- 数字人状态同步
 
-### 3. 学习分析与建议
-- 基于用户描述的学习情况，分析学习需求和问题
-- 提供定制化的学习计划和方法建议
-- 基于学习科学原理，给出专业的学习策略
+### 3. 快捷提问
+- 浮动弹出框展示常用问题
+- 按学科分类组织
+- 一键发送，快速开始对话
 
-### 4. 情感化动作反馈
-- 根据语义分析，数字人做出点头、挥手等相应动作
-- 针对积极内容，数字人会做出鼓励性动作
-- 针对困难内容，数字人会做出安慰和支持性动作
+### 4. 对话体验
+- 支持文本对话
+- 支持图片题目解析
+- 自动滚动优化
+- 滚动到底部按钮
 
-### 5. 多场景学习指导
-- 覆盖日常学习、考试复习、时间管理等多个场景
-- 提供个性化学习方法和技巧
-- 帮助用户制定合理的学习计划和目标
+## 知识库数据结构
+
+```json
+{
+  "id": "math_pythagorean_001",
+  "category": "math",
+  "subject": "数学",
+  "topic": "平面几何",
+  "theorem": "勾股定理",
+  "difficulty": "基础",
+
+  "description": "直角三角形两直角边的平方和等于斜边的平方",
+  "formula": "a² + b² = c²",
+  "formula_latex": "a^2 + b^2 = c^2",
+
+  "proof_steps": [
+    {
+      "step": 1,
+      "title": "构造辅助图形",
+      "content": "以直角三角形三边为边长，分别构造三个正方形"
+    }
+  ],
+
+  "examples": [
+    {
+      "problem": "已知直角三角形两直角边分别为3和4，求斜边长度",
+      "solution": "根据勾股定理：c = √(3² + 4²) = √25 = 5"
+    }
+  ],
+
+  "common_mistakes": [
+    {
+      "mistake": "忘记判断是否为直角三角形",
+      "correction": "勾股定理只适用于直角三角形"
+    }
+  ],
+
+  "socratic_questions": [
+    "如果只知道三角形两边长度，能确定第三边吗？",
+    "为什么勾股定理只适用于直角三角形？"
+  ],
+
+  "keywords": ["勾股定理", "直角三角形", "毕达哥拉斯", "几何"]
+}
+```
 
 ## API 设计
 
 ### POST /api/chat/stream
 流式对话接口（SSE）
 
-**请求体**
-```json
-{
-  "message": "如何提高学习效率？",
-  "conversationHistory": [],
-  "currentData": { ... }
+```typescript
+interface ChatRequest {
+  message: string;
+  images?: string[];
+  sessionId: string;
+  conversationHistory?: ChatMessage[];
+  apiKeys?: {
+    modelScopeApiKey?: string;
+    xmovAppId?: string;
+    xmovAppSecret?: string;
+  };
 }
 ```
-
-**响应** (SSE流)
-```
-data: {"type":"content","data":"提高学习效率的关键"}
-data: {"type":"content","data":"是合理规划时间"}
-data: {"type":"end"}
-```
-
-### GET /api/data
-获取学习数据
-
-### GET /health
-健康检查接口
 
 ## 环境变量
 
 ```bash
+# 前端环境变量
+VITE_API_BASE_URL=/api
+
 # 后端环境变量
-PORT=5177
-NODE_ENV=development
-MODELSCOPE_MODEL=deepseek-ai/DeepSeek-V3.2
+MODELSCOPE_API_KEY=<魔搭API密钥>
+MODELSCOPE_MODEL=deepseek-ai/DeepSeek-V3
 EMBEDDING_MODEL=Qwen/Qwen3-Embedding-8B
-MOCK_DATA_ENABLED=true
-AUTO_UPDATE_INTERVAL=30000
+XMOV_APP_ID=<魔珐星云应用ID>
+XMOV_APP_SECRET=<魔珐星云应用密钥>
+PORT=5177
 ```
 
 ## 开发计划
@@ -159,15 +207,28 @@ AUTO_UPDATE_INTERVAL=30000
 - [x] 消息状态管理
 - [x] 数字人语音同步
 
-### Phase 3: 学习功能 ✅
-- [x] 学习建议生成
-- [x] 语音交互功能
-- [x] 情感化动作反馈
+### Phase 3: 知识库 ✅
+- [x] 知识库数据结构设计
+- [x] RAG 检索服务
+- [x] 语义搜索实现
 
 ### Phase 4: 体验优化 ✅
-- [x] 响应式设计
-- [x] 性能优化
-- [x] 错误处理
+- [x] 快捷提问浮动框
+- [x] 自动滚动优化
+- [x] 数字人一次性说话
+- [x] 网页标签图标
+
+## 参考项目
+
+本项目参考了同目录下的两个已完成项目：
+- `emotion-companion`: 情绪陪伴助手
+- `health-assistant`: 健康咨询助手
+
+主要借鉴：
+- 前后端架构模式
+- 数字人控制器封装
+- RAG 知识库实现
+- 状态管理方案
 
 ## 开发指南
 
@@ -184,7 +245,6 @@ npm run dev
 ### 构建生产版本
 ```bash
 npm run build
-npm start
 ```
 
 ## 注意事项
@@ -197,16 +257,13 @@ npm start
 
 ## 界面说明
 
-### 数字人展示
-- 屏幕中央20%区域，圆形渐变背景
-- 1920x1080设计，自动缩放
-
-### 对话界面
-- 直观的聊天界面，支持语音和文字输入
-- 响应式设计，适配不同屏幕尺寸
-
 ### 顶部导航
 - **设置** ⚙️：配置 API 密钥
+- **清空对话**：清除对话历史
+
+### 对话记录区域
+- **快捷提问** ⚡：浮动弹出框，选择常用问题
+- **滚动到底部**：向上滚动时显示的浮动按钮
 
 ### 数字人状态
 - offline：离线
@@ -214,6 +271,7 @@ npm start
 - think：思考
 - speak：说话
 - idle：待机
+- interactive_idle：互动待机
 
 ## License
 

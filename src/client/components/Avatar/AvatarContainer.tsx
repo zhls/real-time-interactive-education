@@ -76,7 +76,7 @@ export const AvatarContainer: React.FC<AvatarContainerProps> = ({
       setTimeout(() => {
         if (controllerRef.current) {
           controllerRef.current.speakWithAction(
-            '你好！我是学小思，很高兴能和你一起探索知识的奥秘。有什么想学习的定理或概念吗？',
+            '你好！我是落星辰，很高兴能和你一起探索知识的奥秘。有什么想学习的定理或概念吗？',
             'Welcome'
           )
         }

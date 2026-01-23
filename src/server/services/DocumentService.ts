@@ -1,6 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
+import { PDFParse } from 'pdf-parse'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -73,30 +74,32 @@ export class DocumentService {
 
   /**
    * 解析PDF文件
-   * 注意：这是一个简化版本，实际应用中可能需要使用 pdf-parse 或 pdfjs-dist
    */
   private async parsePdfFile(filePath: string): Promise<{ title: string; content: string; type: string }> {
     const filename = path.basename(filePath)
 
-    // 简化版：提示需要安装PDF解析库
-    // 实际应用中可以使用 pdf-parse: npm install pdf-parse
-    throw new Error('PDF解析功能需要安装 pdf-parse 库。请使用 pdf-parse 或将PDF转换为文本格式后上传。')
+    try {
+      const dataBuffer = fs.readFileSync(filePath)
+      // 创建PDFParse实例，传入包含data属性的options对象
+      const pdfParser = new PDFParse({ data: dataBuffer })
+      
+      // 调用getText()方法获取PDF文本内容
+      const textResult = await pdfParser.getText()
+      
+      // 提取文本内容
+      const textContent = textResult.text.trim()
+      const lines = textContent.split('\n').filter((line: string) => line.trim())
+      const title = lines[0] || filename
 
-    /* 完整实现示例（需要安装 pdf-parse）:
-    import pdf from 'pdf-parse'
-
-    const dataBuffer = fs.readFileSync(filePath)
-    const data = await pdf(dataBuffer)
-
-    const lines = data.text.split('\n').filter(line => line.trim())
-    const title = lines[0] || filename
-
-    return {
-      title: title.trim(),
-      content: data.text.trim(),
-      type: 'pdf'
+      return {
+        title: title.trim(),
+        content: textContent,
+        type: 'pdf'
+      }
+    } catch (error) {
+      console.error('PDF解析失败:', error)
+      throw new Error(`PDF解析失败: ${(error as Error).message}`)
     }
-    */
   }
 
   /**
